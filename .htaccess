@@ -1,0 +1,28 @@
+AddDefaultCharset	UTF-8
+# в строке HTTP-запроса отлавливаем запрос вида /?\d*
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /\?\d*\ HTTP/
+# и делаем редирект на корень сайта с удалением GET переменных (знак вопроса ОБЯЗАТЕЛЕН)
+RewriteRule ^ https://www.code-web.ru/? [R=301,L]
+
+# Убираем повторяющиеся слеши (/) в URL
+RewriteCond %{THE_REQUEST} //
+# Проверяем, повторяется ли слеш (//) более двух раз.
+RewriteRule ^ https://www.code-web.ru/$0 [R=301,L]
+# Исключаем все лишние слеши.
+
+
+Redirect 301 /index https://code-web.ru
+
+RewriteEngine on
+RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
+RewriteRule ^ /%1 [NC,L,R]
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^ %{REQUEST_URI}.html [NC,L]
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_HOST} (.*)
+RewriteCond %{REQUEST_URI} /$ [NC]
+RewriteRule ^(.*)(/)$ $1 [L,R=301]
+
+ErrorDocument 404 https://https://code-web.ru/error.html
